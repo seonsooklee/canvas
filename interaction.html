@@ -28,10 +28,11 @@
   context.font = 'bold 30px san-selif';
 
   class Box {
-    constructor(index, x, y) {
+    constructor(index, x, y, speed) {
       this.index = index;
       this.x = x;
       this.y = y;
+      this.speed = speed;
       this.width = 100;
       this.height = 100;
       this.draw();
@@ -45,16 +46,33 @@
     }
   }
 
-  let tempX, tempY;
+  function render() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    let box;
+    for(let i = 0; i < boxes.length; i++) {
+      box = boxes[i];
+      box.x += box.speed;
+      if(box.x > canvas.width) {
+        box.x = - box.width;
+      }
+      box.draw();
+    }
+    requestAnimationFrame(render)
+  }
+
+  let tempX, tempY, tempSpeed;
   for(let i = 0; i < 10; i++) {
     tempX = Math.random() * canvas.width * 0.8;
     tempY = Math.random() * canvas.height * 0.8;
+    tempSpeed = Math.random() * 4 + 1;
     boxes.push(
-      new Box(i, tempX, tempY)
+      new Box(i, tempX, tempY, tempSpeed)
     )
   }
 
-  // console.log(boxes);
+  console.log(boxes);
+  render();
 
   canvas.addEventListener('click', e => {
     mousePos.x = e.layerX;
@@ -68,9 +86,15 @@
       mousePos.y > box.y &&
       mousePos.y < box.y + box.height) {
         selectedBox = box;
-      }
+      } 
     }
-    console.log(selectedBox);
+
+    if(selectedBox) {
+      console.log(selectedBox);
+      selectedBox = null;
+    } 
   })
+
+// selectedBox담겨있는 상태에서 빈 곳을 누르면 이전 인덱스가 출력됨
 </script>
 </html>
