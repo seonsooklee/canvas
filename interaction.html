@@ -22,22 +22,55 @@
 <script>
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
+  const boxes = [];
+  const mousePos = {x: 0, y: 0};
+  let selectedBox; //선택된 box
+  context.font = 'bold 30px san-selif';
 
-  context.fillRect(200, 200, 100, 100)
-
-  function clickHandler(e) {
-    let x = e.layerX;
-    let y = e.layerY;
-    
-    if(x > 200 && x < 200 + 100 &&
-    y > 200 && y < 200 + 100) {
-      console.log('in!');
-    } else {
-      console.log('out!');
+  class Box {
+    constructor(index, x, y) {
+      this.index = index;
+      this.x = x;
+      this.y = y;
+      this.width = 100;
+      this.height = 100;
+      this.draw();
     }
-  
+
+    draw() {
+      context.fillStyle = 'rgba(0, 0, 0, .5)';
+      context.fillRect(this.x, this.y, 100, 100);
+      context.fillStyle = '#fff';
+      context.fillText(this.index, this.x + 30, this.y + 50);
+    }
   }
 
-  canvas.addEventListener('click', clickHandler)
+  let tempX, tempY;
+  for(let i = 0; i < 10; i++) {
+    tempX = Math.random() * canvas.width * 0.8;
+    tempY = Math.random() * canvas.height * 0.8;
+    boxes.push(
+      new Box(i, tempX, tempY)
+    )
+  }
+
+  // console.log(boxes);
+
+  canvas.addEventListener('click', e => {
+    mousePos.x = e.layerX;
+    mousePos.y = e.layerY;
+
+    let box;
+    for(let i = 0; i < boxes.length; i++) {
+      box = boxes[i];
+      if(mousePos.x > box.x &&
+      mousePos.x < box.x + box.width &&
+      mousePos.y > box.y &&
+      mousePos.y < box.y + box.height) {
+        selectedBox = box;
+      }
+    }
+    console.log(selectedBox);
+  })
 </script>
 </html>
